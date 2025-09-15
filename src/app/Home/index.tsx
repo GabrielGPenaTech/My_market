@@ -31,7 +31,11 @@ export  function App() {
     try {
       await itemsStorage.add(newItem)
       await itemByStatus()
+
+      Alert.alert("Adicionado", `Adicinado ${description}`)
+      
       setDescription("")
+      setFilter(FilterStatus.PENDING)
     } catch (error) {
       console.log(error)
       Alert.alert("Erro ao Salvar", "Não foi possível salvar o item na lista")
