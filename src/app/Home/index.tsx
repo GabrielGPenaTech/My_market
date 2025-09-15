@@ -59,7 +59,25 @@ export  function App() {
       await itemByStatus()
     } catch (error) {
       console.log(error)
-      Alert.alert("Erro", "Não foi possível acessar os itens")
+      Alert.alert("Erro", "Não foi possível remover o item")
+    }
+  }
+
+  async function handleClearItems() {
+      Alert.alert("Limpar",  "Deseja remover todos?", [
+      { text: "Não", style: "cancel"},
+      { text: "Sim", onPress: onClear }
+    ])
+
+  }
+  
+  async function onClear() {
+    try {
+      await itemsStorage.clear()
+      setItems([])
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Erro", "Não foi possível limpar a lista")
     }
   }
 
@@ -93,7 +111,7 @@ export  function App() {
               )
             }
 
-            <TouchableOpacity style={styles.clearButton} onPress={() => setItems([])}>
+            <TouchableOpacity style={styles.clearButton} onPress={handleClearItems}>
               <Text style={styles.clearText}>Limpar</Text>
             </TouchableOpacity>
           </View>
