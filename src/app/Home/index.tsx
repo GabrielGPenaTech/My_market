@@ -53,6 +53,16 @@ export  function App() {
     }
   }
 
+  async function handleRemoveItem(id: string) {
+    try {
+      await itemsStorage.remove(id)
+      await itemByStatus()
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Erro", "Não foi possível acessar os itens")
+    }
+  }
+
   useEffect(() => {
     itemByStatus()
   }, [filter])
@@ -94,7 +104,7 @@ export  function App() {
             renderItem={({item}) => (
               <Item 
                 data={item}
-                onRemove={() => console.log(item.description)}
+                onRemove={() => handleRemoveItem(item.id)}
                 onStatus={() => console.log("status")} 
               />
             )}
