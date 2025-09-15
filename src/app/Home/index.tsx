@@ -30,7 +30,7 @@ export  function App() {
 
     try {
       await itemsStorage.add(newItem)
-      await getItems()
+      await itemByStatus()
       setDescription("")
     } catch (error) {
       console.log(error)
@@ -38,9 +38,9 @@ export  function App() {
     }
   }
 
-  async function getItems() {
+  async function itemByStatus() {
     try {
-      const items = await itemsStorage.get()
+      const items = await itemsStorage.getByStatus(filter)
       setItems(items)
       
     } catch (error) {
@@ -50,8 +50,8 @@ export  function App() {
   }
 
   useEffect(() => {
-    getItems()
-  }, [])
+    itemByStatus()
+  }, [filter])
 
   return (
     <View style={styles.container}>
