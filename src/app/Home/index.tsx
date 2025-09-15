@@ -6,36 +6,52 @@ import { Input } from '@/components/Input';
 import { Filter } from '@/components/Filter';
 import { FilterStatus } from '@/types/FilterStatus';
 import { Item } from '@/components/Item';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ItemStorageType, itemsStorage } from '@/storage/itemStorage';
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
 
-type Item = {
-  id: string,
-  description: string,
-  status: FilterStatus
-}
-
 
 export  function App() {
-  const [items, setItems] = useState<Item[]>([])
+  const [items, setItems] = useState<ItemStorageType[]>([])
   const [filter, setFilter] = useState(FilterStatus.PENDING)
   const [description, setDescription] = useState("")
 
-  function handleAdd() {
+  async function handleAdd() {
     if(!description.trim()) {
       return Alert.alert("O campo está vazio!")
     }
 
-    const newItem: Item = {
+    const newItem: ItemStorageType = {
       id: Math.random().toString(36).substring(2),
       description,
       status: FilterStatus.PENDING
     }
 
-    setItems([...items, newItem])
-    setDescription("")
+    try {
+      await itemsStorage.add(newItem)
+      await getItems()
+      setDescription("")
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Erro ao Salvar", "Não foi possível salvar o item na lista")
+    }
   }
+
+  async function getItems() {
+    try {
+      const items = await itemsStorage.get()
+      setItems(items)
+      
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Erro", "Não foi possível acessar os itens")
+    }
+  }
+
+  useEffect(() => {
+    getItems()
+  }, [])
 
   return (
     <View style={styles.container}>
